@@ -1,6 +1,6 @@
 magic
 tech tsmc180
-timestamp 1701431552
+timestamp 1701439237
 << nwell >>
 rect 0 632 297 1337
 << polysilicon >>
@@ -99,8 +99,8 @@ rect 192 1212 206 1292
 rect 231 643 245 1337
 rect 62 46 76 167
 rect 107 75 121 624
-rect 96 61 121 75
-rect 96 0 110 61
+rect 99 61 121 75
+rect 99 0 113 61
 rect 146 47 160 625
 rect 132 33 160 47
 rect 132 0 146 33
@@ -116,7 +116,6 @@ rlabel metal1 0 1232 0 1244 3 Scan
 rlabel metal2 99 1337 113 1337 5 A
 rlabel metal2 132 1337 146 1337 5 B
 rlabel metal2 231 1337 245 1337 5 Y
-rlabel metal2 96 0 110 0 1 A
 rlabel metal2 132 0 146 0 1 B
 rlabel metal1 297 1283 297 1323 7 Vdd!
 rlabel metal1 297 1259 297 1271 7 ScanReturn
@@ -126,4 +125,5 @@ rlabel metal1 297 128 297 140 7 Test
 rlabel metal1 297 99 297 111 7 Clock
 rlabel metal1 297 70 297 82 7 nReset
 rlabel metal1 297 14 297 54 7 GND!
+rlabel metal2 99 0 113 0 1 A
 << end >>
