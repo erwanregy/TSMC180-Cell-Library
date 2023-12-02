@@ -1,0 +1,5 @@
+*
+!.gitignore
+!script.py
+!README.md
+!*.mag
