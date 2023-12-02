@@ -3,6 +3,14 @@ from typing import List, Any
 from datetime import datetime
 
 
+def cleanup() -> None:
+    # TODO: Remove all except files listed in .gitignore
+    # with open(".gitignore", "r") as gitignore:
+    #     gitignore_data = gitignore.readlines()
+    log.close()
+    os.system("rm -f *.ext *.inp *.box *.sv *.vnet *.tcl")
+
+
 class Log:
     colours = {
         "red": "\033[0;31m",
@@ -12,60 +20,95 @@ class Log:
         "cyan": "\033[0;36m",
         "reset": "\033[0m",
     }
+    
+    class LogFile:
+        def __init__(self, filename: str) -> None:
+            self.filename = filename
+            if os.path.exists(filename):
+                os.remove(filename)
+            self.file = open(filename, "w")
+            os.chmod(filename, 0o666)
+            
+        def write(self, message: str) -> None:
+            self.file.write(message + "\n")
+            self.file.flush()
+            
+        def close(self) -> None:
+            os.chmod(self.filename, 0o444)
+            self.file.close()
+            
+    class LogFiles:
+        def __init__(self) -> None:
+            if not os.path.exists("logs"):
+                os.mkdir("logs")
+            os.chmod("logs", 0o777)
+            self.all = Log.LogFile("logs/all.log")
+            self.info = Log.LogFile("logs/info.log")
+            self.warnings = Log.LogFile("logs/warnings.log")
+            self.errors = Log.LogFile("logs/errors.log")
+            
+        def close(self) -> None:
+            self.all.close()
+            self.info.close()
+            self.warnings.close()
+            self.errors.close()
+            os.chmod("logs", 0o555)
 
-    def __init__(self, filename: str, timestamp: bool) -> None:
+    def __init__(self, timestamp: bool) -> None:
         self.timestamp = timestamp
-        if not filename.endswith(".log"):
-            filename += ".log"
-        if os.path.exists(filename):
-            os.remove(filename)
-        self.logfile = open(filename, "w")
-        os.chmod(filename, 0o666)
+        self.log_files = self.LogFiles()
+        self.warnings = 0
         
-    def __del__(self) -> None:
-        os.chmod(self.logfile.name, 0o444)
-        self.logfile.close()
+    def close(self) -> None:
+        self.log_files.close()
     
     def log(self, message: str, colour: str = "reset") -> None:
         if self.timestamp:
             message = f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S.%f')[:-4]}] {message}"
         print(self.colours[colour] + message + self.colours["reset"])
-        self.logfile.write(message + "\n")
-        self.logfile.flush()
+        self.log_files.all.write(message)
 
     def error(self, message: Any) -> None:
         self.log(f"[ERROR] {message}", "red")
+        self.log_files.errors.write(message)
+        cleanup()
         exit(1)
 
     def warning(self, message: Any) -> None:
         self.log(f"[WARN]  {message}", "yellow")
+        self.log_files.warnings.write(message)
+        self.warnings += 1
         
     def info(self, message: Any) -> None:
         self.log(f"[INFO]  {message}", "cyan")
+        self.log_files.info.write(message)
         
-    def success(self, message: Any) -> None:
-        self.log(f"[PASS]  {message}", "green")
+    def result(self) -> None:
+        if self.warnings > 0:
+            self.log(f"[FAIL]  Script finished with {self.warnings} warnings", "red")
+            exit(1)
+        self.log(f"[PASS]  Script completed successfully")
         
     
-log = Log(
-    filename="script",
-    timestamp=True
-)
+log = Log(timestamp=True)
 
     
-def run_command(command: str, error_message: str) -> None:
+def run_command(command: str, error_message: str, warn_only: bool = False) -> None:
     try:
         subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
     except subprocess.CalledProcessError as _:
-        output = _.stdout.decode("utf-8") + _.stderr.decode("utf-8")
-        log.error(f"{error_message}. Reason:\n{output}")
+        output = _.stdout.decode("utf-8").strip() + _.stderr.decode("utf-8").strip()
+        if warn_only:
+            log.warning(f"{error_message}. Reason:\n{output}")
+        else:
+            log.error(f"{error_message}. Reason:\n{output}")
         
         
-def run_magic_commands(cellname: str, commands: List[str], error_message: str, output_file: str = "") -> None:
+def run_magic_commands(cellname: str, commands: List[str], output_file: str = "") -> None:
     command = f"echo \"{'; '.join(commands)}; quit -noprompt\" | magic -dnull -noconsole -T tsmc180 {cellname}"
     if output_file != "":
         command += f" > {output_file}"
-    run_command(command, error_message)
+    run_command(command, f"Failed to run magic commands on cell {cellname}")
 
 
 class Coordinate:
@@ -221,7 +264,7 @@ class Port:
             "Clock": "Inout",
             "nReset": "Inout",
             "GND!": "Inout",
-            "Low": "Inout",
+            "Cross": "Inout",
         },
         "inv": {
             "Vdd!": "Inout",
@@ -358,6 +401,7 @@ class Cell:
         self.name = name
         if name not in self.functions.keys():
             log.error(f"Unrecognised cell name \"{name}\"")
+        self.name = name
         self.function = self.functions[name]
         self.check_cell()
         self.extract_cell()
@@ -369,10 +413,12 @@ class Cell:
         os.remove(f"{name}.ext")
         
     def check_cell(self) -> None:
-        run_command(f"check_magic_leaf_cell -T tsmc180 -M 2 {self.name}", f"{self.name} failed cell check")
+        run_command(f"check_magic_leaf_cell -T tsmc180 -M 2 {self.name}", f"Cell {self.name} failed check_magic_leaf_cell", warn_only=True)
         
     def extract_cell(self) -> None:
-        run_magic_commands(self.name, ["extract"], f"Failed to extract cell {self.name}")
+        run_magic_commands(self.name, ["extract"])
+        if not os.path.exists(f"{self.name}.ext"):
+            log.error(f"Failed to extract cell {self.name}")
             
     def check_position(self, position: Coordinate, name: str) -> None:
         if (position.y == 0 or position.y == self.height) and not round(position.x / 0.66, 10).is_integer():
@@ -406,16 +452,19 @@ class Cell:
         return ports
         
     def get_area(self) -> float:
-        run_magic_commands(self.name, ["select cell", "box"], f"Failed to get area of cell {self.name}", f"{self.name}.box")
+        run_magic_commands(self.name, ["select cell", "box"], f"{self.name}.box")
         with open(f"{self.name}.box", "r") as box_file:
             box_data = box_file.readlines()[-2].split()
         os.remove(f"{self.name}.box")
         self.width = float(box_data[1])
+        if not round(self.width / 0.66, 10).is_integer():
+            log.warning(f"Cell {self.name} width {self.width} µm is not aligned to 0.66 µm grid")
         self.height = float(box_data[3])
         return float(box_data[-1])
     
     def get_propagation_delays(self) -> List[PropagationDelay]:
         # TODO: Implement
+        ...
         return []
 
     def __str__(self) -> str:
@@ -423,7 +472,7 @@ class Cell:
         string += f"\t\t\t<p>{self.function}</p>\n"
         string += "\t\t\t<h3>Ports</h3>\n"
         string += "\t\t\t\t<table>\n"
-        string += "\t\t\t\t\t<tr><th>Name</th><th>Direction</th><th>Capacitance [fF]</th><th>Positions [µm]</th></tr>\n"
+        string += "\t\t\t\t\t<tr><th>Name</th><th>Direction</th><th>Capacitance [fF]</th><th>Positions (x, y) [µm]</th></tr>\n"
         for port in self.ports:
             string += f"\t\t\t\t\t<tr><td>{port.name}</td><td>{port.direction}</td><td>{port.capacitance}</td>\n"
             string += "\t\t\t\t\t<td>" + ", ".join([str(position) for position in port.positions]) + "</td></tr>\n"
@@ -435,7 +484,8 @@ class Cell:
             string += f"\t\t\t\t\t<tr><td>{propagation_delay.load_capacitance}</td><td>{propagation_delay.delay}</td></tr>\n"
         string += "\t\t\t\t</table>\n"
         string += f"\t\t\t<h3>Dimensions</h3>\n"
-        string += f"\t\t\t\t<p>{self.width} µm x {self.height} µm</p>\n"
+        string += f"\t\t\t\t<p>Width:  {self.width} µm</p>\n"
+        string += f"\t\t\t\t<p>Height: {self.height} µm</p>\n"
         string += f"\t\t\t<h3>Area</h3>\n"
         string += f"\t\t\t\t<p>{self.area} µm²</p>\n"
         string += "\t\t\t\t<br>\n"
@@ -445,7 +495,7 @@ class Cell:
 def get_cells() -> List[Cell]:
     cells: List[Cell] = []
     for filename in os.listdir('.'):
-        if filename.endswith('.mag'):
+        if filename.endswith('.mag') and filename != "all.mag":
             cells.append(Cell(filename[:-4]))
     tellest_cell_height = max(cell.height for cell in cells)    
     log.info(f"Tallest cell height is {tellest_cell_height} µm")
@@ -468,13 +518,18 @@ def write_databook(cells: List[Cell]) -> None:
             databook.write(str(cell))
         databook.write("</body>\n")
         databook.write("</html>")
-    log.success("Databook successfully generated")
 
 
 def main() -> None:
     cells = get_cells()
     write_databook(cells)
-
+    log.result()
+    
 
 if __name__ == '__main__':
-    main()
+    # FIXME: Move try except to somewhere else?
+    try:
+        main()
+    except Exception as exception:
+        cleanup()
+        raise exception
