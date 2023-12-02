@@ -1,0 +1,7 @@
+*
+!.vscode
+!.vscode/**
+!.gitignore
+!script.py
+!README.md
+!*.mag
