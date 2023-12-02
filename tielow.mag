@@ -89,6 +89,6 @@ rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 129 0 141 3 Test
 rlabel metal1 297 1284 297 1324 7 Vdd!
 rlabel metal1 0 1284 0 1324 3 Vdd!
-rlabel metal2 132 0 146 0 1 High
-rlabel metal2 132 1339 146 1339 5 High
+rlabel metal2 132 0 146 0 1 Low
+rlabel metal2 132 1339 146 1339 5 Low
 << end >>
