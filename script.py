@@ -9,6 +9,7 @@ class Log:
         "green": "\033[0;32m",
         "yellow": "\033[0;33m",
         "blue": "\033[0;34m",
+        "cyan": "\033[0;36m",
         "reset": "\033[0m",
     }
 
@@ -16,8 +17,10 @@ class Log:
         self.timestamp = timestamp
         if not filename.endswith(".log"):
             filename += ".log"
-        os.chmod(filename, 0o666)
+        if os.path.exists(filename):
+            os.remove(filename)
         self.logfile = open(filename, "w")
+        os.chmod(filename, 0o666)
         
     def __del__(self) -> None:
         os.chmod(self.logfile.name, 0o444)
@@ -25,24 +28,28 @@ class Log:
     
     def log(self, message: str, colour: str = "reset") -> None:
         if self.timestamp:
-            message = f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S:%f')[:-4]}] {message}"
+            message = f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S.%f')[:-4]}] {message}"
         print(self.colours[colour] + message + self.colours["reset"])
         self.logfile.write(message + "\n")
+        self.logfile.flush()
 
     def error(self, message: Any) -> None:
-        self.log(f"[error] {message}", "red")
+        self.log(f"[ERROR] {message}", "red")
         exit(1)
 
     def warning(self, message: Any) -> None:
-        self.log(f"[warning] {message}", "yellow")
+        self.log(f"[WARN]  {message}", "yellow")
         
     def info(self, message: Any) -> None:
-        self.log(f"[info] {message}", "green")
+        self.log(f"[INFO]  {message}", "cyan")
+        
+    def success(self, message: Any) -> None:
+        self.log(f"[PASS]  {message}", "green")
         
     
 log = Log(
     filename="script",
-    timestamp=False
+    timestamp=True
 )
 
     
@@ -412,24 +419,26 @@ class Cell:
         return []
 
     def __str__(self) -> str:
-        string  = f"\t<h2><code>{self.name}</code></h2>\n"
-        string += f"\t<p>{self.function}</p>\n"
-        string += "\t<h3>Ports</h3>\n"
-        string += "\t<table>\n"
-        string += "\t\t<tr><th>Name</th><th>Direction</th><th>Capacitance [fF]</th><th>Positions [µm]</th></tr>\n"
+        string  = f"\t\t<h2><code>{self.name}</code></h2>\n"
+        string += f"\t\t\t<p>{self.function}</p>\n"
+        string += "\t\t\t<h3>Ports</h3>\n"
+        string += "\t\t\t\t<table>\n"
+        string += "\t\t\t\t\t<tr><th>Name</th><th>Direction</th><th>Capacitance [fF]</th><th>Positions [µm]</th></tr>\n"
         for port in self.ports:
-            string += f"\t\t<tr><td>{port.name}</td><td>{port.direction}</td><td>{port.capacitance}</td>\n"
-            string += "\t\t<td>" + ", ".join([str(position) for position in port.positions]) + "</td></tr>\n"
-        string += "\t</table>\n"
-        string += "\t<h3>Propagation Delays</h3>\n"
-        string += "\t<table>\n"
-        string += "\t\t<tr><th>Load Capacitance [fF]</th><th>Delay [?s]</th></tr>\n"
+            string += f"\t\t\t\t\t<tr><td>{port.name}</td><td>{port.direction}</td><td>{port.capacitance}</td>\n"
+            string += "\t\t\t\t\t<td>" + ", ".join([str(position) for position in port.positions]) + "</td></tr>\n"
+        string += "\t\t\t\t</table>\n"
+        string += "\t\t\t<h3>Propagation Delays</h3>\n"
+        string += "\t\t\t\t<table>\n"
+        string += "\t\t\t\t\t<tr><th>Load Capacitance [fF]</th><th>Delay [?s]</th></tr>\n"
         for propagation_delay in self.propagation_delays:
-            string += f"\t\t<tr><td>{propagation_delay.load_capacitance}</td><td>{propagation_delay.delay}</td></tr>\n"
-        string += "\t</table>\n"
-        string += f"\t<h3>Area</h3>\n"
-        string += f"\t<p>{self.area} µm²</p>\n"
-        string += "\t<br>\n"
+            string += f"\t\t\t\t\t<tr><td>{propagation_delay.load_capacitance}</td><td>{propagation_delay.delay}</td></tr>\n"
+        string += "\t\t\t\t</table>\n"
+        string += f"\t\t\t<h3>Dimensions</h3>\n"
+        string += f"\t\t\t\t<p>{self.width} µm x {self.height} µm</p>\n"
+        string += f"\t\t\t<h3>Area</h3>\n"
+        string += f"\t\t\t\t<p>{self.area} µm²</p>\n"
+        string += "\t\t\t\t<br>\n"
         return string
 
 
@@ -459,6 +468,7 @@ def write_databook(cells: List[Cell]) -> None:
             databook.write(str(cell))
         databook.write("</body>\n")
         databook.write("</html>")
+    log.success("Databook successfully generated")
 
 
 def main() -> None:
