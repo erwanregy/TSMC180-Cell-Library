@@ -1,22 +1,64 @@
 import os, subprocess
-from typing import List
+from typing import List, Any
+from datetime import datetime
 
 
-def error(message: str) -> None:
-    print(f"\033[0;31m[ERROR] {message}\033[0m")
-    exit(1)
+class Log:
+    colours = {
+        "red": "\033[0;31m",
+        "green": "\033[0;32m",
+        "yellow": "\033[0;33m",
+        "blue": "\033[0;34m",
+        "reset": "\033[0m",
+    }
 
-
-def warn(message: str) -> None:
-    print(f"\033[0;33m[WARNING] {message}\033[0m")
+    def __init__(self, filename: str, timestamp: bool) -> None:
+        self.timestamp = timestamp
+        if not filename.endswith(".log"):
+            filename += ".log"
+        os.chmod(filename, 0o666)
+        self.logfile = open(filename, "w")
+        
+    def __del__(self) -> None:
+        os.chmod(self.logfile.name, 0o444)
+        self.logfile.close()
     
+    def log(self, message: str, colour: str = "reset") -> None:
+        if self.timestamp:
+            message = f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S:%f')[:-4]}] {message}"
+        print(self.colours[colour] + message + self.colours["reset"])
+        self.logfile.write(message + "\n")
+
+    def error(self, message: Any) -> None:
+        self.log(f"[error] {message}", "red")
+        exit(1)
+
+    def warning(self, message: Any) -> None:
+        self.log(f"[warning] {message}", "yellow")
+        
+    def info(self, message: Any) -> None:
+        self.log(f"[info] {message}", "green")
+        
+    
+log = Log(
+    filename="script",
+    timestamp=False
+)
+
     
 def run_command(command: str, error_message: str) -> None:
     try:
-        subprocess.run(command.split(), check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except subprocess.CalledProcessError as exception:
-        output = exception.stdout.decode("utf-8") + exception.stderr.decode("utf-8")
-        error(f"{error_message}. Reason:\n{output}")
+        subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
+    except subprocess.CalledProcessError as _:
+        output = _.stdout.decode("utf-8") + _.stderr.decode("utf-8")
+        log.error(f"{error_message}. Reason:\n{output}")
+        
+        
+def run_magic_commands(cellname: str, commands: List[str], error_message: str, output_file: str = "") -> None:
+    command = f"echo \"{'; '.join(commands)}; quit -noprompt\" | magic -dnull -noconsole -T tsmc180 {cellname}"
+    if output_file != "":
+        command += f" > {output_file}"
+    run_command(command, error_message)
 
 
 class Coordinate:
@@ -255,14 +297,13 @@ class Port:
         cell_name: str,
         position: Coordinate,
     ) -> None:
-        # TODO: Figure out how to get direction. Also, is Q an inout? No
         self.name = name
         if cell_name[-1].isdigit():
             cell_name = cell_name[:-1]
         try:
             self.direction = self.directions[cell_name][name]
         except:
-            error(f"Unknown port {name} in cell {cell_name}")
+            log.error(f"Unknown port {name} in cell {cell_name}")
         self.positions = [position]
         self.capacitance = ""
     
@@ -306,24 +347,38 @@ class Cell:
         self,
         name: str,
     ) -> None:
+        log.info(f"Processing cell {name}")
         self.name = name
         if name not in self.functions.keys():
-            error(f"Unknown cell type: {name}")
+            log.error(f"Unrecognised cell name \"{name}\"")
         self.function = self.functions[name]
         self.check_cell()
-        magic_data = open(f"{name}.mag", "r").readlines()
-        self.area = self.get_area(magic_data)
+        self.extract_cell()
+        self.area = self.get_area()
+        with open(f"{name}.mag", "r") as magic_file:
+            magic_data = magic_file.readlines()
         self.ports = self.get_ports(magic_data)
         self.propagation_delays = self.get_propagation_delays()
+        os.remove(f"{name}.ext")
         
     def check_cell(self) -> None:
         run_command(f"check_magic_leaf_cell -T tsmc180 -M 2 {self.name}", f"{self.name} failed cell check")
+        
+    def extract_cell(self) -> None:
+        run_magic_commands(self.name, ["extract"], f"Failed to extract cell {self.name}")
             
     def check_position(self, position: Coordinate, name: str) -> None:
         if (position.y == 0 or position.y == self.height) and not round(position.x / 0.66, 10).is_integer():
-            warn(f"Vertical port {name} at {position} in cell {self.name} is not aligned to 0.66 µm grid")
+            log.warning(f"Vertical port {name} at {position} in cell {self.name} is not aligned to 0.66 µm grid")
         
     def get_ports(self, magic_data: List[str]) -> List[Port]:
+        # TODO: Use ext2svmod instead?
+        run_command(f"ext2svmod {self.name}", f"Failed to convert ext")
+        os.remove(f"{self.name}.sv")
+        os.remove(f"{self.name}_stim.sv")
+        os.remove(f"{self.name}.vnet")
+        os.remove(f"{self.name}.tcl")
+        
         ports: List[Port] = []
         for line in magic_data:
             if not line.startswith("rlabel"):
@@ -339,35 +394,21 @@ class Cell:
                     break
             if not port_already_exists:
                 ports.append(Port(name, self.name, position))
-        run_command(f"ext2sp {self.name}", f"Failed to convert {self.name} cell to spice")
-        for line in open(f"{self.name}.spice", "r").readlines():
-            if not line.startswith("C"):
-                continue
-            name = line.split()[1]
-            capacitance = float(line.split()[3][:-2])
-            for i, port in enumerate(ports):
-                if port.name.endswith("!"):
-                    port.name = port.name[:-1]
-                if port.name == name:
-                    ports[i].capacitance = str(capacitance)
-                    break
-        os.remove(f"{self.name}.spice")
-        os.remove(f"{self.name}.sp")
+        # TODO: Calculate input capacitance
+        ...
         return ports
         
-    def get_area(self, magic_data: List[str]) -> float:
-        xs: List[int] = []
-        ys: List[int] = []
-        for line in magic_data:
-            if not line.startswith("rect"):
-                continue
-            xs.append(int(line.split()[-2]))
-            ys.append(int(line.split()[-1]))
-        width = max(xs) / 50
-        self.height = max(ys) / 50
-        return width * self.height
+    def get_area(self) -> float:
+        run_magic_commands(self.name, ["select cell", "box"], f"Failed to get area of cell {self.name}", f"{self.name}.box")
+        with open(f"{self.name}.box", "r") as box_file:
+            box_data = box_file.readlines()[-2].split()
+        os.remove(f"{self.name}.box")
+        self.width = float(box_data[1])
+        self.height = float(box_data[3])
+        return float(box_data[-1])
     
     def get_propagation_delays(self) -> List[PropagationDelay]:
+        # TODO: Implement
         return []
 
     def __str__(self) -> str:
@@ -391,11 +432,17 @@ class Cell:
         string += "\t<br>\n"
         return string
 
+
 def get_cells() -> List[Cell]:
     cells: List[Cell] = []
     for filename in os.listdir('.'):
         if filename.endswith('.mag'):
             cells.append(Cell(filename[:-4]))
+    tellest_cell_height = max(cell.height for cell in cells)    
+    log.info(f"Tallest cell height is {tellest_cell_height} µm")
+    for cell in cells:
+        if cell.height != tellest_cell_height:
+            log.warning(f"Cell {cell.name} has height {cell.height} µm, expected {tellest_cell_height} µm")
     return cells
 
 
