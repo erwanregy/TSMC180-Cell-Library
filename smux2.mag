@@ -1,9 +1,8 @@
 magic
 tech tsmc180
-timestamp 1701548898
+timestamp 1701609707
 << nwell >>
 rect 0 605 561 1328
-rect 72 604 147 605
 << polysilicon >>
 rect 68 927 77 1003
 rect 139 927 148 1003
