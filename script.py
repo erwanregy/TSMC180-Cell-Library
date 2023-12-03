@@ -371,11 +371,12 @@ class PropagationDelay:
 class Cell:
     functions = {
         "rdtype": "Raw D-Type Flip-Flop",
-        "smux2": "Two Input Multiplexer",
-        "smux3": "Three Input Multiplexer",
+        "smux2": "Two Input Scan Multiplexer",
+        "smux3": "Three Input Scan Multiplexer",
         "fulladder": "Full Adder",
         "halfadder": "Half Adder",
         "xor2": "Two Input XOR Gate",
+        "mux2": "Two Input Standard Multiplexer",
         "leftbuf": "Left End of Row Buffer",
         "rightend": "Right End of Row Cell",
         "inv": "Inverter",
