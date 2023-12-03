@@ -1,33 +1,33 @@
 magic
 tech tsmc180
-timestamp 1701541156
+timestamp 1701604628
 << nwell >>
-rect 0 605 297 1324
+rect 0 605 66 1324
 << metal1 >>
-rect 0 1284 297 1324
-rect 0 1260 297 1272
-rect 0 1233 297 1245
-rect 0 129 297 141
-rect 0 100 297 112
-rect 0 71 297 83
-rect 0 15 297 55
+rect 0 1284 66 1324
+rect 0 1260 66 1272
+rect 0 1233 66 1245
+rect 0 129 66 141
+rect 0 100 66 112
+rect 0 71 66 83
+rect 0 15 66 55
 << metal2 >>
-rect 132 0 146 1339
+rect 33 0 47 1339
 << labels >>
 rlabel metal1 0 1260 0 1272 3 ScanReturn
 rlabel metal1 0 1233 0 1245 3 Scan
-rlabel metal1 297 1260 297 1272 7 ScanReturn
-rlabel metal1 297 1233 297 1245 7 Scan
-rlabel metal1 297 129 297 141 7 Test
-rlabel metal1 297 100 297 112 7 Clock
-rlabel metal1 297 71 297 83 7 nReset
-rlabel metal1 297 15 297 55 7 GND!
 rlabel metal1 0 15 0 55 3 GND!
 rlabel metal1 0 71 0 83 3 nReset
 rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 129 0 141 3 Test
-rlabel metal1 297 1284 297 1324 7 Vdd!
 rlabel metal1 0 1284 0 1324 3 Vdd!
-rlabel metal2 132 0 146 0 1 Cross
-rlabel metal2 132 1339 146 1339 5 Cross
+rlabel metal1 66 1260 66 1272 7 ScanReturn
+rlabel metal1 66 1233 66 1245 7 Scan
+rlabel metal1 66 129 66 141 7 Test
+rlabel metal1 66 100 66 112 7 Clock
+rlabel metal1 66 71 66 83 7 nReset
+rlabel metal1 66 15 66 55 7 GND!
+rlabel metal1 66 1284 66 1324 7 Vdd!
+rlabel metal2 33 1339 47 1339 5 Cross
+rlabel metal2 33 0 47 0 1 Cross
 << end >>
