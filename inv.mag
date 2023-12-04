@@ -1,10 +1,10 @@
 magic
 tech tsmc180
-timestamp 1701646065
+timestamp 1701694120
 << rotate >>
 rect 33 824 37 942
 << nwell >>
-rect 0 605 132 1328
+rect 0 605 132 1324
 << polysilicon >>
 rect 83 744 92 755
 rect 83 634 92 646
@@ -29,11 +29,11 @@ rect 95 529 116 583
 rect 59 646 80 744
 rect 95 646 116 744
 << psubstratetap >>
-rect 31 32 106 54
+rect 31 28 106 50
 << nsubstratetap >>
 rect 31 1291 104 1313
 << metal1 >>
-rect 0 1313 132 1328
+rect 0 1313 132 1324
 rect 0 1291 31 1313
 rect 104 1291 132 1313
 rect 0 1284 132 1291
@@ -44,17 +44,20 @@ rect 104 583 116 646
 rect 0 129 132 141
 rect 0 100 132 112
 rect 0 71 132 83
-rect 0 54 132 59
-rect 0 32 31 54
-rect 106 32 132 54
-rect 0 15 132 32
+rect 0 52 132 55
+rect 0 50 63 52
+rect 82 50 132 52
+rect 0 28 31 50
+rect 106 28 132 50
+rect 0 15 132 28
 << m2contact >>
 rect 62 1291 81 1310
 rect 61 684 80 703
 rect 97 683 116 702
 rect 33 614 52 633
 rect 61 540 80 559
-rect 63 33 82 52
+rect 63 50 82 52
+rect 63 33 82 50
 << metal2 >>
 rect 33 633 47 1339
 rect 63 703 77 1291
@@ -69,16 +72,16 @@ rlabel metal2 99 1339 113 1339 5 Y
 rlabel metal2 99 0 113 0 1 Y
 rlabel metal1 132 1233 132 1245 7 Scan
 rlabel metal1 132 1260 132 1272 7 ScanReturn
-rlabel metal1 132 1284 132 1328 7 Vdd!
 rlabel metal1 132 129 132 141 7 Test
 rlabel metal1 132 100 132 112 7 Clock
 rlabel metal1 132 71 132 83 7 nReset
-rlabel metal1 132 15 132 59 7 GND!
-rlabel metal1 0 1284 0 1328 3 Vdd!
 rlabel metal1 0 1260 0 1272 3 ScanReturn
-rlabel metal1 0 15 0 59 3 GND!
 rlabel metal1 0 129 0 141 3 Test
 rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 71 0 83 3 nReset
 rlabel metal1 0 1233 0 1245 3 Scan
+rlabel metal1 0 15 0 55 3 GND!
+rlabel metal1 132 15 132 55 7 GND!
+rlabel metal1 132 1284 132 1324 7 Vdd!
+rlabel metal1 0 1284 0 1324 3 Vdd!
 << end >>

@@ -1,8 +1,8 @@
 magic
 tech tsmc180
-timestamp 1701647509
+timestamp 1701693662
 << nwell >>
-rect 0 605 429 1328
+rect 0 605 429 1324
 << polysilicon >>
 rect 68 927 77 1003
 rect 139 927 148 1003
@@ -95,11 +95,11 @@ rect 375 829 396 927
 rect 44 624 65 722
 rect 80 624 101 722
 << psubstratetap >>
-rect 62 34 382 55
+rect 62 30 382 51
 << nsubstratetap >>
 rect 38 1293 392 1314
 << metal1 >>
-rect 0 1314 429 1328
+rect 0 1314 429 1324
 rect 0 1293 38 1314
 rect 392 1293 429 1314
 rect 0 1284 429 1293
@@ -145,12 +145,14 @@ rect 0 129 58 141
 rect 79 129 429 141
 rect 0 100 429 112
 rect 0 71 429 83
-rect 0 55 429 59
-rect 0 34 62 55
-rect 382 34 429 55
-rect 0 33 118 34
-rect 137 33 429 34
-rect 0 15 429 33
+rect 0 54 429 55
+rect 0 52 341 54
+rect 0 51 118 52
+rect 137 51 341 52
+rect 360 51 429 54
+rect 0 30 62 51
+rect 382 30 429 51
+rect 0 15 429 30
 << m2contact >>
 rect 116 1253 135 1272
 rect 72 1225 91 1244
@@ -162,9 +164,10 @@ rect 217 592 236 611
 rect 82 306 101 325
 rect 116 197 135 216
 rect 340 195 359 214
-rect 118 34 137 52
-rect 341 35 360 54
-rect 118 33 137 34
+rect 118 51 137 52
+rect 341 51 360 54
+rect 118 33 137 51
+rect 341 35 360 51
 << metal2 >>
 rect 135 1257 198 1271
 rect 91 1225 211 1239
@@ -179,20 +182,20 @@ rect 120 52 134 197
 rect 231 0 245 592
 rect 343 54 357 195
 << labels >>
-rlabel metal1 0 1284 0 1328 3 Vdd!
 rlabel metal1 0 1260 0 1272 3 ScanReturn
 rlabel metal1 0 1233 0 1245 3 SDI
-rlabel metal1 0 15 0 59 3 GND!
 rlabel metal1 0 129 0 141 3 Test
 rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 71 0 83 3 nReset
 rlabel metal2 231 1339 245 1339 5 D
 rlabel metal2 231 0 245 0 1 D
 rlabel metal1 429 1260 429 1272 7 ScanReturn
-rlabel metal1 429 1284 429 1328 7 Vdd!
 rlabel metal1 429 1205 429 1217 7 M
 rlabel metal1 429 129 429 141 7 Test
 rlabel metal1 429 100 429 112 7 Clock
 rlabel metal1 429 71 429 83 7 nReset
-rlabel metal1 429 15 429 59 7 GND!
+rlabel metal1 0 15 0 55 3 GND!
+rlabel metal1 429 15 429 55 7 GND!
+rlabel metal1 0 1284 0 1324 3 Vdd!
+rlabel metal1 429 1284 429 1324 7 Vdd!
 << end >>

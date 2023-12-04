@@ -1,8 +1,8 @@
 magic
 tech tsmc180
-timestamp 1701644541
+timestamp 1701693523
 << nwell >>
-rect 0 605 627 1328
+rect 0 605 627 1324
 << polysilicon >>
 rect 95 927 104 1020
 rect 166 927 175 1015
@@ -139,11 +139,11 @@ rect 178 624 199 722
 rect 290 624 311 722
 rect 331 624 352 722
 << psubstratetap >>
-rect 51 34 571 55
+rect 51 30 571 51
 << nsubstratetap >>
 rect 42 1292 573 1313
 << metal1 >>
-rect 0 1313 627 1328
+rect 0 1313 627 1324
 rect 0 1292 42 1313
 rect 573 1292 627 1313
 rect 0 1284 627 1292
@@ -209,13 +209,13 @@ rect 580 141 592 382
 rect 580 129 627 141
 rect 0 100 627 112
 rect 0 71 627 83
-rect 0 55 627 59
-rect 0 34 51 55
-rect 571 34 627 55
-rect 0 23 210 34
-rect 229 33 450 34
-rect 469 33 627 34
-rect 229 23 627 33
+rect 0 52 627 55
+rect 0 51 450 52
+rect 469 51 627 52
+rect 0 30 51 51
+rect 571 30 627 51
+rect 0 23 210 30
+rect 229 23 627 30
 rect 0 15 627 23
 << m2contact >>
 rect 214 1253 233 1272
@@ -240,10 +240,10 @@ rect 575 382 594 401
 rect 109 126 128 145
 rect 212 139 231 158
 rect 447 139 466 158
-rect 210 34 229 42
-rect 450 34 469 52
-rect 210 23 229 34
-rect 450 33 469 34
+rect 450 51 469 52
+rect 210 30 229 42
+rect 450 33 469 51
+rect 210 23 229 30
 << metal2 >>
 rect 33 772 47 1339
 rect 99 1330 113 1339
@@ -267,23 +267,23 @@ rect 452 52 466 139
 rect 99 11 124 25
 rect 99 0 113 11
 << labels >>
-rlabel metal1 0 1284 0 1328 3 Vdd!
 rlabel metal1 0 71 0 83 3 nReset
 rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 129 0 141 3 Test
 rlabel metal2 33 0 47 0 1 D
 rlabel metal2 99 0 113 0 1 Load
-rlabel metal1 0 15 0 59 3 GND!
 rlabel metal1 0 1260 0 1272 3 ScanReturn
 rlabel metal1 0 1233 0 1245 3 SDI
 rlabel metal1 627 1205 627 1217 7 M
 rlabel metal1 627 1233 627 1245 7 Q
-rlabel metal1 627 1284 627 1328 7 Vdd!
 rlabel metal1 627 1260 627 1272 7 ScanReturn
 rlabel metal1 627 129 627 141 7 Test
 rlabel metal1 627 100 627 112 7 Clock
 rlabel metal1 627 71 627 83 7 nReset
-rlabel metal1 627 15 627 59 7 GND!
 rlabel metal2 99 1339 113 1339 5 Load
 rlabel metal2 33 1339 47 1339 5 D
+rlabel metal1 0 1284 0 1324 3 Vdd!
+rlabel metal1 627 1284 627 1324 7 Vdd!
+rlabel metal1 0 15 0 55 3 GND!
+rlabel metal1 627 15 627 55 7 GND!
 << end >>
