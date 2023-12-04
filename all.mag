@@ -1,24 +1,84 @@
 magic
 tech tsmc180
-timestamp 1701693720
+timestamp 1701698987
 use leftbuf  leftbuf_0
 timestamp 1701621919
 transform 1 0 0 0 1 0
 box 0 0 2574 1339
 use inv  inv_0
-timestamp 1701646065
+timestamp 1701694120
 transform 1 0 2574 0 1 0
 box 0 0 132 1339
 use smux2  smux2_0
-timestamp 1701647509
+timestamp 1701693662
 transform 1 0 2706 0 1 0
 box 0 0 429 1339
 use rdtype  rdtype_0
-timestamp 1701631232
+timestamp 1701697972
 transform 1 0 3135 0 1 0
 box 0 0 429 1339
 use buffer  buffer_0
-timestamp 1701647406
+timestamp 1701693918
 transform 1 0 3564 0 1 0
 box 0 0 132 1339
+use scandtype  scandtype_0
+timestamp 1701698285
+transform 1 0 3696 0 1 0
+box 0 0 858 1339
+use nand2  nand2_0
+timestamp 1701618993
+transform 1 0 4554 0 1 0
+box 0 0 297 1339
+use smux3  smux3_0
+timestamp 1701693523
+transform 1 0 4851 0 1 0
+box 0 0 627 1339
+use rdtype  rdtype_1
+timestamp 1701697972
+transform 1 0 5478 0 1 0
+box 0 0 429 1339
+use nand3  nand3_0
+timestamp 1701619048
+transform 1 0 5907 0 1 0
+box 0 0 297 1339
+use scanreg  scanreg_0
+timestamp 1701696883
+transform 1 0 6204 0 1 0
+box 0 0 1056 1339
+use fulladder  fulladder_0
+timestamp 1701697717
+transform 1 0 7260 0 1 0
+box 0 0 429 1339
+use mux2  mux2_0
+timestamp 1701693773
+transform 1 0 7689 0 1 0
+box 0 0 396 1339
+use trisbuf  trisbuf_0
+timestamp 1701693217
+transform 1 0 8085 0 1 0
+box 0 0 297 1339
+use tiehigh  tiehigh_0
+timestamp 1701692771
+transform 1 0 8382 0 1 0
+box 0 0 297 1339
+use tielow  tielow_0
+timestamp 1701697574
+transform 1 0 8679 0 1 0
+box 0 0 297 1339
+use rowcrosser  rowcrosser_0
+timestamp 1701604628
+transform 1 0 8976 0 1 0
+box 0 0 66 1339
+use and2  and2_0
+timestamp 1701692293
+transform 1 0 9042 0 1 0
+box 0 0 297 1339
+use nand4  nand4_0
+timestamp 1701690570
+transform 1 0 9339 0 1 0
+box 0 0 297 1339
+use rightend  rightend_0
+timestamp 1701619147
+transform 1 0 9636 0 1 0
+box 0 0 565 1339
 << end >>

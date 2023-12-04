@@ -1,8 +1,8 @@
 magic
 tech tsmc180
-timestamp 1701692096
+timestamp 1701697717
 << nwell >>
-rect 0 605 432 1284
+rect 0 605 429 1284
 << polysilicon >>
 rect 39 1070 48 1081
 rect 110 1070 119 1081
@@ -222,15 +222,15 @@ rect 234 18 269 53
 << nsubstratetap >>
 rect 235 1285 270 1320
 << metal1 >>
-rect 0 1320 432 1324
+rect 0 1320 429 1324
 rect 0 1305 235 1320
 rect 0 1284 15 1305
 rect 36 1284 51 1305
 rect 72 1285 235 1305
-rect 270 1285 432 1320
-rect 72 1284 432 1285
-rect 0 1260 432 1272
-rect 0 1233 432 1245
+rect 270 1285 429 1320
+rect 72 1284 429 1285
+rect 0 1260 429 1272
+rect 0 1233 429 1245
 rect 50 1069 73 1070
 rect 50 1048 51 1069
 rect 72 1048 73 1069
@@ -318,17 +318,17 @@ rect 50 175 73 176
 rect 50 154 51 175
 rect 72 154 73 175
 rect 50 153 73 154
-rect 0 129 432 141
-rect 0 100 432 112
-rect 0 71 432 83
-rect 0 54 432 55
+rect 0 129 429 141
+rect 0 100 429 112
+rect 0 71 429 83
+rect 0 54 429 55
 rect 0 33 15 54
 rect 36 33 51 54
-rect 72 53 432 54
+rect 72 53 429 54
 rect 72 33 234 53
 rect 0 18 234 33
-rect 269 18 432 53
-rect 0 15 432 18
+rect 269 18 429 53
+rect 0 15 429 18
 << m2contact >>
 rect 15 1284 36 1305
 rect 51 1284 72 1305
@@ -393,9 +393,6 @@ rlabel metal2 132 1339 146 1339 5 B
 rlabel metal2 198 1339 212 1339 5 Cin
 rlabel metal2 297 1339 311 1339 5 Cout
 rlabel metal2 396 1339 410 1339 5 S
-rlabel metal1 432 1284 432 1324 7 Vdd!
-rlabel metal1 432 1260 432 1272 7 ScanReturn
-rlabel metal1 432 1233 432 1245 7 Scan
 rlabel metal1 0 71 0 83 3 nReset
 rlabel metal1 0 100 0 112 3 Clock
 rlabel metal1 0 129 0 141 3 Test
@@ -405,8 +402,11 @@ rlabel metal2 132 0 146 0 1 B
 rlabel metal2 198 0 212 0 1 Cin
 rlabel metal2 297 0 311 0 1 Cout
 rlabel metal2 396 0 410 0 1 S
-rlabel metal1 432 71 432 83 7 nReset
-rlabel metal1 432 100 432 112 7 Clock
-rlabel metal1 432 129 432 141 7 Test
-rlabel metal1 432 15 432 55 7 GND!
+rlabel metal1 429 1284 429 1324 7 Vdd!
+rlabel metal1 429 1260 429 1272 7 ScanReturn
+rlabel metal1 429 1233 429 1245 7 Scan
+rlabel metal1 429 71 429 83 7 nReset
+rlabel metal1 429 100 429 112 7 Clock
+rlabel metal1 429 129 429 141 7 Test
+rlabel metal1 429 15 429 55 7 GND!
 << end >>
