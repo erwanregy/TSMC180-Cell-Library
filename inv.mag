@@ -1,6 +1,6 @@
 magic
 tech tsmc180
-timestamp 1701635211
+timestamp 1701646065
 << rotate >>
 rect 33 824 37 942
 << nwell >>
@@ -29,13 +29,13 @@ rect 95 529 116 583
 rect 59 646 80 744
 rect 95 646 116 744
 << psubstratetap >>
-rect 61 31 84 54
+rect 31 32 106 54
 << nsubstratetap >>
-rect 59 1291 82 1314
+rect 31 1291 104 1313
 << metal1 >>
-rect 0 1314 132 1328
-rect 0 1291 59 1314
-rect 82 1291 132 1314
+rect 0 1313 132 1328
+rect 0 1291 31 1313
+rect 104 1291 132 1313
 rect 0 1284 132 1291
 rect 0 1260 132 1272
 rect 0 1233 132 1245
@@ -45,9 +45,9 @@ rect 0 129 132 141
 rect 0 100 132 112
 rect 0 71 132 83
 rect 0 54 132 59
-rect 0 31 61 54
-rect 84 31 132 54
-rect 0 15 132 31
+rect 0 32 31 54
+rect 106 32 132 54
+rect 0 15 132 32
 << m2contact >>
 rect 62 1291 81 1310
 rect 61 684 80 703
