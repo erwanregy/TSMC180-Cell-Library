@@ -14,14 +14,14 @@ Before using the script, ensure you have the following installed:
 
 ## Usage
 
-1. Ensure your Magic cell files (.mag) into the same directory as the script.
+1. Ensure your Magic cell files (`.mag`) are in the same directory as the script.
 2. Run the following command to generate the data book:
 
         $ python3 script.py
         ...
         [PASS]  Script completed successfully
 
-3. The script will process each cell, extract relevant information, and generate an HTML data book named `data book.html`.
+3. The script will process each cell, extract relevant information, and generate an HTML data book named `databook.html`.
 4. Open the data book in you preffered web browser to view the results.
 
 ## Data Book Structure

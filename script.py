@@ -585,7 +585,7 @@ class Databook:
                 #     # continue to next cell
                 # else:
                 #     ... # log success
-                self.write()
+                # self.write()
         tallest_cell_height = max(cell.height for cell in self.cells)    
         log.info(f"Tallest cell height is {tallest_cell_height} µm")
         for cell in self.cells:
