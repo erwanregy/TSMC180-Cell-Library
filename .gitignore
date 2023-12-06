@@ -3,5 +3,5 @@
 !.vscode/**
 !.gitignore
 !script.py
-!README.md
+!README.txt
 !*.mag
