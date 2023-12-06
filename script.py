@@ -418,9 +418,10 @@ class Cell:
                 spice += ".include /opt/cad/designkits/ecs/hspice/tsmc180.mod\n"
                 spice += ".temp 25\n"
                 spice += ".param vd=1.8V\n"
-                spice += ".param CLOAD=OPTC(0.01fF, 0.01fF, 50pF)\n"
+                spice += ".param CLOAD=OPTC(0.01fF, 0.01fF, 50fF)\n"
                 spice += "Vsupply Vdd GND DC vd\n"
                 spice += "Vin in GND PULSE(0 vd 10ns 0.25ns 0.25ns 10ns 1s)\n"
+                # spice += "Vin in GND PULSE(0 vd 100ps 80ps 80ps 500ps 1u)\n"
                 for other_input_port in self.input_ports:
                     if other_input_port.name == input_port.name:
                         continue
@@ -428,6 +429,7 @@ class Cell:
                     #     spice += f"V{other_input_port.name} {other_input_port.name} GND 0\n"
                     # else:
                     #     spice += f"V{other_input_port.name} {other_input_port.name} GND vd\n"
+                    spice += f"V{other_input_port.name} {other_input_port.name} GND 0.5*vd\n"
                 spice += f"X{self.name}_driver0 mid0  in  Vdd GND {self.name}\n"
                 spice += f"X{self.name}_load    out  mid0 Vdd GND {self.name}\n"
                 spice += f"X{self.name}_driver1 mid1  in  Vdd GND {self.name}\n"
@@ -440,6 +442,7 @@ class Cell:
                 spice += ".measure TRAN tdavgc PARAM='(tdrc+tdfc)/2' GOAL=tdavg\n"
                 spice += ".model OPT1 opt\n"
                 spice += ".tran 1fs 30ns SWEEP OPTIMIZE=optc RESULTS=tdavgc MODEL=OPT1\n"
+                # spice += ".tran 1ps 1ns SWEEP OPTIMIZE=optc RESULTS=tdavgc MODEL=OPT1\n"
                 spice += ".option scale=0.02u\n"
                 spice += f".subckt {self.name} {output_port.name} {input_port.name} Vdd GND\n"
                 run_command(f"ext2sp -f {self.name}")
@@ -453,8 +456,7 @@ class Cell:
                     spice_file.write(spice)
                 run_command(f"hspice {self.name}.sp", f"Failed to run input capacitance HSPICE on cell '{self.name}'")
                 with open(f"{self.name}.mt0", "r") as mt0_file:
-                    capacitance = round(float(mt0_file.readlines()[-3].split()[-3]), 2)
-                average_capacitance += capacitance * 1e15
+                    average_capacitance += float(mt0_file.readlines()[-3].split()[-3]) * 1e15
                 os.remove(f"{self.name}.spice")
                 os.remove(f"{self.name}.sp")
                 os.remove(f"{self.name}.ic0")
@@ -464,7 +466,7 @@ class Cell:
                 os.remove(f"{self.name}.tr0")
             if num_output_ports == 0:
                 continue
-            self.ports[self.ports.index(input_port)].capacitance = average_capacitance / num_output_ports
+            self.ports[self.ports.index(input_port)].capacitance = round(average_capacitance / num_output_ports, 2)
         # TODO: Implement
         for input_port in self.input_ports:
             for load_capacitance in [0.01, 0.1, 1, 10, 50]:
@@ -503,8 +505,8 @@ class Cell:
                     if all(delay == "failed" for delay in delays):
                         skip = True
                         break
-                    average.rise_delay += round(max(float(delays[0]), float(delays[1])) * 1e12, 2)
-                    average.fall_delay += round(max(float(delays[2]), float(delays[3])) * 1e12, 2)
+                    average.rise_delay += round(max(float(delays[0]), float(delays[1]), 0) * 1e12, 2)
+                    average.fall_delay += round(min(max(float(delays[2]), 0), max(float(delays[3]), 0)) * 1e12, 2)
                     average.average_delay += (average.rise_delay + average.fall_delay) / 2
                     os.remove(f"{self.name}.spice")
                     os.remove(f"{self.name}.sp")
@@ -575,7 +577,7 @@ class Databook:
     def get_cells(self) -> None:
         self.cells: List[Cell] = []
         for filename in sorted(os.listdir(".")):
-        # for filename in ["rdtype.mag"]:
+        # for filename in ["rightend.mag"]:
             if filename.endswith(".mag") and filename != "all.mag":
                 self.cells.append(Cell(filename[:-4]))
                 # try:
@@ -585,7 +587,7 @@ class Databook:
                 #     # continue to next cell
                 # else:
                 #     ... # log success
-                # self.write()
+                self.write()
         tallest_cell_height = max(cell.height for cell in self.cells)    
         log.info(f"Tallest cell height is {tallest_cell_height} µm")
         for cell in self.cells:
@@ -594,18 +596,18 @@ class Databook:
         self.cells = sorted(self.cells, key=lambda cell: cell.name)
 
     def write(self) -> None:
-        with open("databook.html", "w") as databook:
-            databook.write("<!DOCTYPE html>\n")
-            # databook.write("<html style='font-family:monospace'>\n")
-            databook.write("<html>\n")
-            databook.write("<head><meta charset='UTF-8'><title>Databook</title></head>\n")
-            databook.write("<body>\n")
-            databook.write("\t<h1>Databook</h1>\n")
+        with open("databook.html", "w") as file:
+            file.write("<!DOCTYPE html>\n")
+            # file.write("<html style='font-family:monospace'>\n")
+            file.write("<html>\n")
+            file.write("<head><meta charset='UTF-8'><title>Databook</title></head>\n")
+            file.write("<body>\n")
+            file.write("\t<h1>Databook</h1>\n")
             for cell in self.cells:
-                databook.write(str(cell))
-            databook.write("</body>\n")
-            databook.write("</html>")
-            databook.flush()
+                file.write(str(cell))
+            file.write("</body>\n")
+            file.write("</html>")
+            file.flush()
 
 
 def main() -> None:
