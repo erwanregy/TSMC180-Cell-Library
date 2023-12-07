@@ -507,7 +507,7 @@ class Cell:
                         break
                     average.rise_delay += round(max(float(delays[0]), float(delays[1]), 0) * 1e12, 2)
                     average.fall_delay += round(min(max(float(delays[2]), 0), max(float(delays[3]), 0)) * 1e12, 2)
-                    average.average_delay += (average.rise_delay + average.fall_delay) / 2
+                    average.average_delay += round((average.rise_delay + average.fall_delay) / 2, 2)
                     os.remove(f"{self.name}.spice")
                     os.remove(f"{self.name}.sp")
                     os.remove(f"{self.name}.ic0")
