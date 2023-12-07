@@ -1,6 +1,12 @@
 magic
 tech tsmc180
-timestamp 1701698987
+timestamp 1701961594
+<< error_s >>
+rect 7229 866 7266 875
+rect 7235 858 7266 866
+rect 7253 662 7260 684
+rect 7275 608 7282 662
+rect 7689 608 7699 684
 use leftbuf  leftbuf_0
 timestamp 1701621919
 transform 1 0 0 0 1 0
@@ -26,7 +32,7 @@ timestamp 1701698285
 transform 1 0 3696 0 1 0
 box 0 0 858 1339
 use nand2  nand2_0
-timestamp 1701618993
+timestamp 1701960635
 transform 1 0 4554 0 1 0
 box 0 0 297 1339
 use smux3  smux3_0
@@ -46,7 +52,7 @@ timestamp 1701696883
 transform 1 0 6204 0 1 0
 box 0 0 1056 1339
 use fulladder  fulladder_0
-timestamp 1701697717
+timestamp 1701883273
 transform 1 0 7260 0 1 0
 box 0 0 429 1339
 use mux2  mux2_0
@@ -54,15 +60,15 @@ timestamp 1701693773
 transform 1 0 7689 0 1 0
 box 0 0 396 1339
 use trisbuf  trisbuf_0
-timestamp 1701693217
+timestamp 1701882597
 transform 1 0 8085 0 1 0
 box 0 0 297 1339
 use tiehigh  tiehigh_0
-timestamp 1701692771
+timestamp 1701882768
 transform 1 0 8382 0 1 0
 box 0 0 297 1339
 use tielow  tielow_0
-timestamp 1701697574
+timestamp 1701882920
 transform 1 0 8679 0 1 0
 box 0 0 297 1339
 use rowcrosser  rowcrosser_0
@@ -70,7 +76,7 @@ timestamp 1701604628
 transform 1 0 8976 0 1 0
 box 0 0 66 1339
 use and2  and2_0
-timestamp 1701692293
+timestamp 1701880688
 transform 1 0 9042 0 1 0
 box 0 0 297 1339
 use nand4  nand4_0
